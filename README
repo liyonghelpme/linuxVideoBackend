@@ -10,3 +10,12 @@ cocos2dx HelloWorldScene VideoController
 audio.py kill.py 用于cocos2dx 调用控制音频录制
 video 文件夹中 包括 web接口 和 视频压缩后台服务
 
+使用tornado 和 flask 作为 web 服务器的
+原理：
+    使用 redis 作为消息通知， 视频状态存储
+    testTornado.py 作为web接口 对外服务
+    checkVideo.py 作为内部压缩视频服务 在完成视频之后 将消息呀如redis
+
+两个接口：
+    getVideo  发起请求获取视频 立即返回 三种状态： 视频可能没有开始制作  视频可能已经正在制作 视频可能已经制作好了
+    checkVideo 等待特定编号的视频制作好  长轮询。 两种状态： 视频制作， 视频制作好了
