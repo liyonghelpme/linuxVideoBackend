@@ -1,0 +1,12 @@
+涉及到的技术点：
+cocos2dx 在linux平台上 使用libav库 将glReadPixel 压缩成视频
+pactl parec 将音频录制下来
+avconv 将视频音频合并
+redis 用于在web 和 视频压缩服务间通信
+
+
+涉及的文件：
+cocos2dx HelloWorldScene VideoController
+audio.py kill.py 用于cocos2dx 调用控制音频录制
+video 文件夹中 包括 web接口 和 视频压缩后台服务
+
