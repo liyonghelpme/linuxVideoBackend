@@ -16,8 +16,8 @@ for i in l:
         count += 1
 print deviceName
 
-cmd = '(parec -d %s | oggenc -b 192 -o test.ogg --raw -)&' % (deviceName)
-#cmd = '(parec -d %s | lame -r - test.mp3)&' % (deviceName)
+#cmd = '(parec -d %s | oggenc -b 192 -o test.ogg --raw -)&' % (deviceName)
+cmd = '(parec -d %s | lame -r - test.mp3)&' % (deviceName)
 print cmd
 os.system(cmd)
 
