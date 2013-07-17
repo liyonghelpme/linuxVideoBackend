@@ -62,9 +62,9 @@ void VideoController::startWork(int winW, int winH, int w, int h, char *fileName
     //mpeg mpeg
     
     outputVideo = new VideoWriter();
-    string name = "GameVideo.mpeg";
+    string name = "GameVideo.avi";
     Size s = Size(width, height);
-    int ncodec = CV_FOURCC('M', 'P', 'E', 'G');
+    int ncodec = CV_FOURCC('M', 'P', '4', '2');
     outputVideo->open(name, ncodec, 25, s, true); 
     if(!outputVideo->isOpened()) {
         printf("not opened output video\n");
