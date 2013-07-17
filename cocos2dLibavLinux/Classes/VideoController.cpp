@@ -1,6 +1,9 @@
 #include "VideoController.h"
 #include "string.h"
 #include <stdlib.h>
+#include <string>
+using namespace std;
+
 /*
 video = VideoController::create();
 addChild(video);
@@ -45,21 +48,48 @@ void VideoController::startWork(int winW, int winH, int w, int h, char *fileName
 
     width = w;
     height = h;
+    
     tempCache = malloc(sizeof(int)*w);
+
     startYet = true;
     frameRate = 1.0/25; //每s 30 帧
 
     passTime = frameRate;
     totalTime = 0;
     frameCount = 0;
-    av_register_all();
-    
 
+    //avi mp42
+    //mpeg mpeg
+    
+    outputVideo = new VideoWriter();
+    string name = "GameVideo.mpeg";
+    Size s = Size(width, height);
+    int ncodec = CV_FOURCC('M', 'P', 'E', 'G');
+    outputVideo->open(name, ncodec, 25, s, true); 
+    if(!outputVideo->isOpened()) {
+        printf("not opened output video\n");
+        return ;
+    }
+
+    img = new Mat(height, width, CV_8UC3);
+    dst = new Mat(height, width, CV_8UC3);
+    glPixelStorei(GL_PACK_ALIGNMENT, (img->step&3)?1:4);
+    glPixelStorei(GL_PACK_ROW_LENGTH, img->step/img->elemSize());
+
+
+
+    /*
+    
     pixelBuffer = (uint8_t *)malloc(sizeof(int)*winWidth*winHeight);
     if(!pixelBuffer) {
         printf("could not pixelBuffer\n");
         exit(1);
     }
+    
+    av_register_all();
+    
+
+
 
     fmt = av_guess_format(NULL, fileName, NULL);
     if(!fmt) {
@@ -88,6 +118,7 @@ void VideoController::startWork(int winW, int winH, int w, int h, char *fileName
     }
 
     av_write_header(oc);
+    */
     
     
     printf("before system\n");
@@ -96,6 +127,17 @@ void VideoController::startWork(int winW, int winH, int w, int h, char *fileName
     
     
 }
+void VideoController::stopWork()
+{
+    delete outputVideo;
+    delete img;
+    delete dst;
+    outputVideo = NULL;
+    //free(pixelBuffer);
+    free(tempCache);
+}
+
+/*
 void VideoController::stopWork()
 {
     av_write_trailer(oc);
@@ -129,6 +171,27 @@ void VideoController::stopWork()
     //printf("after kill pid %d\n", ret);
     
 }
+*/
+
+void VideoController::compressCurrentFrame()
+{
+    //glPixelStorei(GL_PACK_ALIGNMENT, )
+    glReadPixels(0, 0, img->cols, img->rows, GL_BGR, GL_UNSIGNED_BYTE, img->data);    
+    /*
+    int i, j;
+    for(i = 0, j = height-1; i < j; i++, j--) {
+        memcpy(tempCache, &pixelBuffer[(i*width)*4], 4*width);
+        memcpy(&pixelBuffer[(i*width)*4], &pixelBuffer[(j*width)*4], 4*width);
+        memcpy(&pixelBuffer[(j*width)*4], tempCache, 4*width);
+    }
+    */
+
+    cv::flip(*img, *dst, 0);
+
+    //Mat src(height, width, CV_8UC3, pixelBuffer);
+    (*outputVideo) << (*dst);
+}
+/*
 void VideoController::compressCurrentFrame()
 {
     AVCodecContext *c = video_st->codec;
@@ -195,6 +258,7 @@ void VideoController::compressCurrentFrame()
 
     //fwrite(outbuf, 1, out_size, f);
 }
+*/
 /*
 pts 帧率的问题
 http://stackoverflow.com/questions/6603979/ffmpegavcodec-encode-video-setting-pts-h264
