@@ -29,3 +29,7 @@ video 文件夹中 包括 web接口 和 视频压缩后台服务
     音频流 MP3
     容器编码 avi
     avconv 直接将两个流拷贝到目标文件中
+
+测试接口：
+    http://192.168.3.122:5000/checkVideo?uid=20&rid=500
+    http://192.168.3.122:5000/getVideo?uid=10&rid=500
